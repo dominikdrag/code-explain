@@ -11,10 +11,10 @@ Deep, multi-layered code explanations—from high-level architecture down to lin
 - **Pattern recognition**: Identifies design patterns and conventions
 - **Visual diagrams**: ASCII/Mermaid dependency, sequence, flowchart, and class diagrams
 
-## Skills
+## Commands
 
-| Skill | Description |
-|-------|-------------|
+| Command | Description |
+|---------|-------------|
 | `/explain [target]` | Full explanation with parallel context gathering |
 | `/trace [function]` | Trace execution flow through codebase |
 | `/why [file:line]` | Quick explanation of why specific code exists |
@@ -61,7 +61,7 @@ Deep, multi-layered code explanations—from high-level architecture down to lin
 
 ## How It Works
 
-The `/explain` skill orchestrates 5 specialized agents in parallel:
+The `/explain` command orchestrates 5 specialized agents in parallel:
 
 1. **context-gatherer** - Traces imports, exports, callers, callees
 2. **history-detective** - Analyzes git blame and commit history

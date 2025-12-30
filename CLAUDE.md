@@ -15,7 +15,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
 Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
 
 Examples:
-- `feat: add /trace skill for execution flow tracing`
+- `feat: add /trace command for execution flow tracing`
 - `fix: correct JSON schema in context-gatherer output`
 - `docs: update README with diagram examples`
 
@@ -27,7 +27,7 @@ This is a Claude Code plugin that provides deep, multi-layered code explanations
 
 ### Agent Pipeline
 
-The `/explain` skill orchestrates 5 agents:
+The `/explain` command orchestrates 5 agents:
 1. **Gathering phase** (parallel): context-gatherer, history-detective, test-reader, pattern-identifier
 2. **Synthesis phase**: explanation-synthesizer consumes JSON from all 4 gatherers
 
@@ -41,19 +41,19 @@ Agents output structured JSON schemas for consistent interchange. The synthesize
 
 ### Component Locations
 
+- `commands/` - Command definitions with frontmatter (description, argument-hint) and workflow instructions
 - `agents/` - Agent definitions with frontmatter (name, description, model, color, tools) and system prompts
-- `skills/*/SKILL.md` - Skill definitions with frontmatter (name, description) and workflow instructions
 - `.claude-plugin/plugin.json` - Plugin manifest
 
 ## Plugin Conventions
 
+### Command Files
+
+Commands use YAML frontmatter with `description` and `argument-hint`. Body content is written FOR Claude (second person) and uses `$ARGUMENTS` to reference user input.
+
 ### Agent Files
 
 Agents use YAML frontmatter with required fields: `name`, `description`, `model`, `color`. The `description` must include `<example>` blocks showing triggering scenarios.
-
-### Skill Files
-
-Skills use third-person descriptions with trigger phrases ("This skill should be used when..."). Body content uses imperative form.
 
 ### JSON Output Schemas
 

@@ -1,46 +1,91 @@
 ---
-name: diagram
-description: This skill should be used when the user asks to "create a diagram", "show me the dependencies", "visualize the architecture", "generate a flowchart", "show class relationships", or uses "/diagram". Generates ASCII or Mermaid diagrams of code structure.
+description: Generate ASCII or Mermaid diagrams showing code structure, dependencies, and relationships
+argument-hint: File, directory, or function [--type=dependencies|sequence|flowchart|class] [--format=ascii|mermaid]
 ---
 
-# Diagram Generation Skill
+# Diagram Generation Workflow
 
-Generate visual diagrams showing code structure, dependencies, and relationships.
+You are helping a developer visualize code structure through diagrams.
 
-## Invocation
+## Core Principles
 
-```
-/diagram <target> [--type=TYPE] [--format=FORMAT]
-```
+- **Accuracy over aesthetics**: Diagrams must reflect actual code structure
+- **Keep it readable**: Don't overcrowd diagrams
+- **Use appropriate type**: Match diagram type to what's being visualized
 
-**Parameters:**
-- `target` - File, directory, or function name (required)
-- `--type` - Diagram type: `dependencies`, `sequence`, `flowchart`, `class`
-- `--format` - Output format: `ascii` (default) or `mermaid`
+---
 
-**Examples:**
-```
-/diagram src/services/ --type=dependencies
-/diagram handlePayment --type=sequence
-/diagram src/models/ --type=class --format=mermaid
-/diagram processOrder --type=flowchart
-```
+## Phase 1: Parse Request
 
-## Diagram Types
+**Goal**: Understand what to diagram
 
-### Dependencies (`--type=dependencies`)
+Initial request: $ARGUMENTS
 
-Shows module/file dependencies and relationships.
+**Actions**:
+1. Parse the request:
+   - **Target**: File, directory, or function name (required)
+   - **Type**: `dependencies`, `sequence`, `flowchart`, or `class` (default: infer from target)
+   - **Format**: `ascii` (default) or `mermaid`
 
-**When to use:** Understanding how modules connect, finding circular dependencies, seeing the import graph.
+2. Infer type if not specified:
+   - Directory → dependencies
+   - Function → sequence or flowchart
+   - File with classes → class
 
-**Analysis steps:**
+3. If no arguments, ask: "What would you like me to diagram?"
+
+---
+
+## Phase 2: Analyze Target
+
+**Goal**: Gather information for the diagram
+
+**Actions vary by diagram type:**
+
+### For Dependencies Diagram
 1. Find all files in target directory
 2. Parse imports/requires in each file
 3. Build dependency graph
-4. Identify clusters and circular deps
+4. Identify:
+   - Clusters of related files
+   - Circular dependencies
+   - External dependencies
 
-**ASCII output:**
+### For Sequence Diagram
+1. Find the target function
+2. Trace its execution path
+3. Identify actors (services, components, external systems)
+4. Map the call sequence with:
+   - Function calls
+   - Async operations
+   - Return values
+
+### For Flowchart Diagram
+1. Parse the target function
+2. Identify control structures:
+   - Conditionals (if, switch)
+   - Loops (for, while)
+   - Try/catch blocks
+3. Map decision points and outcomes
+4. Identify terminal states
+
+### For Class Diagram
+1. Find all classes/interfaces in target
+2. Identify:
+   - Inheritance (extends)
+   - Implementation (implements)
+   - Composition (class properties)
+   - Associations
+
+---
+
+## Phase 3: Generate Diagram
+
+**Goal**: Create the visual output
+
+### Dependencies Diagram
+
+**ASCII:**
 ```
                     ┌──────────────┐
                     │   index.ts   │
@@ -55,11 +100,11 @@ Shows module/file dependencies and relationships.
             └─────┬──────┘
                   ▼
            ┌──────────┐
-           │ db.ts    │
+           │  db.ts   │
            └──────────┘
 ```
 
-**Mermaid output:**
+**Mermaid:**
 ```mermaid
 graph TD
     index[index.ts] --> auth[auth.ts]
@@ -69,19 +114,9 @@ graph TD
     api --> db
 ```
 
-### Sequence (`--type=sequence`)
+### Sequence Diagram
 
-Shows execution flow and function calls over time.
-
-**When to use:** Understanding request handling, tracing data flow, documenting APIs.
-
-**Analysis steps:**
-1. Find the target function
-2. Trace its execution path
-3. Identify actors (services, components)
-4. Map the call sequence
-
-**ASCII output:**
+**ASCII:**
 ```
 ┌────────┐     ┌──────────┐     ┌──────────┐     ┌────────┐
 │ Client │     │  Router  │     │ Service  │     │   DB   │
@@ -101,7 +136,7 @@ Shows execution flow and function calls over time.
     │◀──────────────│                │               │
 ```
 
-**Mermaid output:**
+**Mermaid:**
 ```mermaid
 sequenceDiagram
     Client->>Router: POST /order
@@ -112,19 +147,9 @@ sequenceDiagram
     Router-->>Client: 201 Created
 ```
 
-### Flowchart (`--type=flowchart`)
+### Flowchart Diagram
 
-Shows control flow and decision logic within a function.
-
-**When to use:** Understanding complex conditionals, documenting algorithms, explaining branching logic.
-
-**Analysis steps:**
-1. Parse the target function
-2. Identify control structures (if, switch, loops)
-3. Map decision points and outcomes
-4. Show terminal states
-
-**ASCII output:**
+**ASCII:**
 ```
             ┌─────────────┐
             │   Start     │
@@ -153,7 +178,7 @@ Shows control flow and decision logic within a function.
 └─────────┘ └─────────┘
 ```
 
-**Mermaid output:**
+**Mermaid:**
 ```mermaid
 flowchart TD
     A[Start] --> B{Valid input?}
@@ -164,19 +189,9 @@ flowchart TD
     E -->|No| G[Refund]
 ```
 
-### Class (`--type=class`)
+### Class Diagram
 
-Shows class/interface relationships, inheritance, and composition.
-
-**When to use:** Understanding OOP structure, documenting APIs, seeing inheritance hierarchies.
-
-**Analysis steps:**
-1. Find all classes/interfaces in target
-2. Identify inheritance (extends/implements)
-3. Find composition (class properties)
-4. Map relationships
-
-**ASCII output:**
+**ASCII:**
 ```
 ┌─────────────────────────────┐
 │      <<interface>>          │
@@ -197,7 +212,7 @@ Shows class/interface relationships, inheritance, and composition.
 └─────────────┘ └─────────────┘
 ```
 
-**Mermaid output:**
+**Mermaid:**
 ```mermaid
 classDiagram
     class IPaymentProvider {
@@ -217,22 +232,29 @@ classDiagram
     IPaymentProvider <|.. PayPalProvider
 ```
 
-## Format Guidelines
+---
 
-**ASCII (default):**
-- Use box-drawing characters: `┌ ┐ └ ┘ ─ │ ┬ ┴ ├ ┤ ┼`
-- Use arrows: `▶ ◀ ▲ ▼ ──▶ ◀──`
-- Keep width under 80 characters when possible
-- Use consistent spacing
+## Phase 4: Present Results
 
-**Mermaid:**
-- Output valid Mermaid syntax in fenced code block
-- Use appropriate diagram type directive
-- Include styling hints if complex
+**Goal**: Deliver the diagram with context
+
+**Actions**:
+1. Present the diagram
+2. Add brief legend if needed
+3. Note any limitations:
+   - Files omitted for clarity
+   - Depth limits applied
+   - Circular dependencies found
+4. Offer to:
+   - Generate different diagram type
+   - Focus on specific area
+   - Switch format (ASCII ↔ Mermaid)
+
+---
 
 ## Error Handling
 
-- **Target not found:** Suggest similar files/functions
-- **Too complex:** For large directories, suggest focusing on subdirectory
-- **No classes found:** For class diagram on non-OOP code, suggest flowchart instead
-- **Circular dependencies:** Highlight them in the diagram with notation
+- **Target not found**: Suggest similar files/functions
+- **Too complex**: For large directories, suggest focusing on subdirectory
+- **No classes found**: For class diagram on non-OOP code, suggest flowchart
+- **Circular dependencies**: Highlight them with notation in diagram
