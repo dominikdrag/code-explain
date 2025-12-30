@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.2] - 2025-12-30
+
+### Changed
+- `/diagram` command now outputs ASCII by default instead of Mermaid
+
+### Added
+- `--mermaid` flag for `/diagram` to use Mermaid syntax
+- `--save=path.md` option to save diagrams to a markdown file
+- `--copy` option to copy diagrams to clipboard
+
 ## [1.0.1] - 2025-12-30
 
 ### Changed

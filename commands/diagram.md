@@ -1,6 +1,6 @@
 ---
 description: Generate ASCII or Mermaid diagrams showing code structure, dependencies, and relationships
-argument-hint: File, directory, or function [--type=dependencies|sequence|flowchart|class] [--format=ascii|mermaid]
+argument-hint: File, directory, or function [--type=dependencies|sequence|flowchart|class] [--mermaid] [--save=path.md] [--copy]
 ---
 
 # Diagram Generation Workflow
@@ -25,7 +25,9 @@ Initial request: $ARGUMENTS
 1. Parse the request:
    - **Target**: File, directory, or function name (required)
    - **Type**: `dependencies`, `sequence`, `flowchart`, or `class` (default: infer from target)
-   - **Format**: `ascii` (default) or `mermaid`
+   - **--mermaid**: Use Mermaid syntax instead of ASCII (default: ASCII)
+   - **--save=path.md**: Save diagram to a markdown file at specified path
+   - **--copy**: Copy diagram to clipboard after displaying
 
 2. Infer type if not specified:
    - Directory → dependencies
@@ -239,16 +241,28 @@ classDiagram
 **Goal**: Deliver the diagram with context
 
 **Actions**:
-1. Present the diagram
-2. Add brief legend if needed
-3. Note any limitations:
+1. Generate the diagram in the appropriate format:
+   - **Default**: ASCII art (always print to console)
+   - **--mermaid**: Mermaid syntax instead of ASCII
+
+2. Handle output options:
+   - **--save=path.md**: Write the diagram to specified markdown file
+     - Wrap in appropriate code fence (``` for ASCII, ```mermaid for Mermaid)
+     - Include a title based on target and diagram type
+   - **--copy**: Copy diagram to clipboard using `pbcopy` (macOS) or `xclip` (Linux)
+     - Confirm to user: "Diagram copied to clipboard"
+
+3. Add brief legend if needed
+
+4. Note any limitations:
    - Files omitted for clarity
    - Depth limits applied
    - Circular dependencies found
-4. Offer to:
+
+5. Offer to:
    - Generate different diagram type
    - Focus on specific area
-   - Switch format (ASCII ↔ Mermaid)
+   - Use --mermaid, --save, or --copy if not already used
 
 ---
 

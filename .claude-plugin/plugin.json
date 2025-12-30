@@ -1,6 +1,6 @@
 {
   "name": "code-explain",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Deep, multi-layered code explanations with context gathering, history analysis, and pattern recognition",
   "author": {
     "name": "Dominik Drag"
