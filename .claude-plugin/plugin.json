@@ -1,0 +1,9 @@
+{
+  "name": "code-explain",
+  "version": "1.0.0",
+  "description": "Deep, multi-layered code explanations with context gathering, history analysis, and pattern recognition",
+  "author": {
+    "name": "Dominik Drag"
+  },
+  "keywords": ["explanation", "documentation", "code-understanding", "architecture", "onboarding"]
+}
