@@ -40,44 +40,55 @@ Initial request: $ARGUMENTS
 
 ## Phase 2: Analyze Target
 
-**Goal**: Gather information for the diagram
+**Goal**: Gather information for the diagram using parallel agents
 
-**Actions vary by diagram type:**
+**CRITICAL**: Launch agents in a SINGLE message to maximize parallelism.
+
+**Actions**:
+1. Launch relevant agents **in parallel** based on diagram type:
+
+   | Diagram Type | Agents to Launch |
+   |--------------|------------------|
+   | dependencies | context-gatherer |
+   | sequence     | context-gatherer |
+   | flowchart    | context-gatherer |
+   | class        | context-gatherer, pattern-identifier |
+
+2. Agent responsibilities:
+
+   **context-gatherer agent** (used by all diagram types):
+   - Trace imports, exports, and dependencies
+   - Map call hierarchy (callers and callees)
+   - Return JSON with: imports, exports, callers, callees, module_context
+
+   **pattern-identifier agent** (used by class diagrams):
+   - Identify classes, interfaces, and their relationships
+   - Detect inheritance and composition patterns
+   - Return JSON with: design_patterns, framework_conventions, project_conventions
+
+3. Wait for all agents to complete
+
+4. Use agent outputs to build diagram data:
 
 ### For Dependencies Diagram
-1. Find all files in target directory
-2. Parse imports/requires in each file
-3. Build dependency graph
-4. Identify:
-   - Clusters of related files
-   - Circular dependencies
-   - External dependencies
+- Use `imports` and `exports` from context-gatherer
+- Build dependency graph showing file relationships
+- Identify clusters and circular dependencies
 
 ### For Sequence Diagram
-1. Find the target function
-2. Trace its execution path
-3. Identify actors (services, components, external systems)
-4. Map the call sequence with:
-   - Function calls
-   - Async operations
-   - Return values
+- Use `callers` and `callees` from context-gatherer
+- Map the call sequence between actors
+- Include async operations and return values
 
 ### For Flowchart Diagram
-1. Parse the target function
-2. Identify control structures:
-   - Conditionals (if, switch)
-   - Loops (for, while)
-   - Try/catch blocks
-3. Map decision points and outcomes
-4. Identify terminal states
+- Use `callees` from context-gatherer for function flow
+- Read target file to identify control structures (if, switch, loops, try/catch)
+- Map decision points and terminal states
 
 ### For Class Diagram
-1. Find all classes/interfaces in target
-2. Identify:
-   - Inheritance (extends)
-   - Implementation (implements)
-   - Composition (class properties)
-   - Associations
+- Use `design_patterns` from pattern-identifier
+- Use `exports` from context-gatherer for class definitions
+- Map inheritance, implementation, and composition relationships
 
 ---
 

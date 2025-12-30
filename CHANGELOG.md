@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.3] - 2025-12-30
+
+### Changed
+- `/diagram` command now uses parallel agents (context-gatherer, pattern-identifier) for analysis
+
 ## [1.0.2] - 2025-12-30
 
 ### Changed
