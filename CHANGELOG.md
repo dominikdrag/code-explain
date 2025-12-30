@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.4] - 2025-12-30
+
+### Fixed
+- Changed pattern-identifier agent color from magenta to red (magenta not supported in Claude Code)
+
 ## [1.0.3] - 2025-12-30
 
 ### Changed

@@ -21,7 +21,7 @@ Pattern-identifier can analyze broader architectural patterns across files.
 </example>
 
 model: sonnet
-color: magenta
+color: red
 tools: ["Read", "Grep", "Glob"]
 ---
 
