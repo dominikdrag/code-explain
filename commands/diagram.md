@@ -42,31 +42,28 @@ Initial request: $ARGUMENTS
 
 **Goal**: Gather information for the diagram using parallel agents
 
-**CRITICAL**: Launch agents in a SINGLE message to maximize parallelism.
+**CRITICAL**: You MUST launch ALL required agents in a SINGLE tool call message. Do NOT wait for one agent to complete before launching the next. Use multiple Task tool invocations in a single response.
 
 **Actions**:
-1. Launch relevant agents **in parallel** based on diagram type:
+1. Determine which agents to launch based on diagram type:
+   - **dependencies**: context-gatherer
+   - **sequence**: context-gatherer
+   - **flowchart**: context-gatherer
+   - **class**: context-gatherer AND pattern-identifier (BOTH in parallel)
 
-   | Diagram Type | Agents to Launch |
-   |--------------|------------------|
-   | dependencies | context-gatherer |
-   | sequence     | context-gatherer |
-   | flowchart    | context-gatherer |
-   | class        | context-gatherer, pattern-identifier |
+2. Launch agents **in parallel** (single message with multiple Task tool calls):
 
-2. Agent responsibilities:
-
-   **context-gatherer agent** (used by all diagram types):
+   **context-gatherer agent** (all diagram types):
    - Trace imports, exports, and dependencies
    - Map call hierarchy (callers and callees)
    - Return JSON with: imports, exports, callers, callees, module_context
 
-   **pattern-identifier agent** (used by class diagrams):
+   **pattern-identifier agent** (class diagrams only):
    - Identify classes, interfaces, and their relationships
    - Detect inheritance and composition patterns
    - Return JSON with: design_patterns, framework_conventions, project_conventions
 
-3. Wait for all agents to complete
+3. Wait for all agents to complete (they run concurrently)
 
 4. Use agent outputs to build diagram data:
 

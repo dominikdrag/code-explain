@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.5] - 2025-12-30
+
+### Fixed
+- Clarified parallel agent execution in `/diagram` command to ensure agents launch in single message
+
 ## [1.0.4] - 2025-12-30
 
 ### Fixed
