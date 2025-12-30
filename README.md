@@ -71,8 +71,11 @@ The `/explain` skill orchestrates 5 specialized agents in parallel:
 
 ## Installation
 
-```bash
-claude --plugin-dir /path/to/code-explain
+Available via [dominikdrag-marketplace](https://github.com/dominikdrag/dominikdrag-marketplace). Run from Claude Code CLI:
+
+```
+/plugin marketplace add dominikdrag/dominikdrag-marketplace
+/plugin install code-explain@dominikdrag-marketplace
 ```
 
 ## License
